@@ -36,7 +36,16 @@ medical <- as_tibble(read_excel("/Users/chaselatour/Library/CloudStorage/OneDriv
          # Fix a typo
          journal = ifelse(journal == "Annals of Internal Medicine", "Annals of Internal Med", journal),
          # Combine the e-value and e-value precursor (Ding & Vanderweele 2016)
-         eval_ind = ifelse(pre_eval_ind == 1, 1, eval_ind)) %>% 
+         eval_ind = ifelse(pre_eval_ind == 1, 1, eval_ind),
+         # Combine the cca in a linked and non-linked dataset
+         cca_2_ind = ifelse(cca_ind == 1 | linked_dataset_ind == 1,
+                            1,
+                            0),
+         # Make the indicator variable for if a specific analysis
+         cca_2_specific = ifelse(cca_specific == 1 | linked_dataset_ind == 1,
+                                 1,
+                                 0)
+         ) %>% 
   # Select the variables that we want
   select(c(title, include, reviewer, second_reviewer, authors, journal_type, journal, year, sens_analyses_list, 
            ends_with("_ind"), ends_with("_info"), ends_with("_specific"), conf_limitation_quote,
@@ -69,7 +78,15 @@ epi <- as_tibble(read_excel("/Users/chaselatour/Library/CloudStorage/OneDrive-Un
          journal = ifelse(journal == "Pharmacoepi and drug safety",
                           "Pharmacoepidemiology and Drug Safety",
                           journal),
-         eval_ind = ifelse(pre_eval_ind == 1, 1, eval_ind)) %>% 
+         eval_ind = ifelse(pre_eval_ind == 1, 1, eval_ind),
+         # Combine the cca in a linked and non-linked dataset
+         cca_2_ind = ifelse(cca_ind == 1 | linked_dataset_ind == 1,
+                            1,
+                            0),
+         #Make the indicator variable for if it's a specific analysis
+         cca_2_specific = ifelse(cca_specific == 1 | linked_dataset_ind == 1,
+                                 1,
+                                 0)) %>% 
   # Select the variables that we want
   select(c(title, include, reviewer, second_reviewer, authors, journal_type, journal, year, sens_analyses_list, 
            ends_with("_ind"), ends_with("_info"), ends_with("_specific"), conf_limitation_quote,

@@ -120,10 +120,12 @@ combined %>%
 
 table2 <- combined %>% 
   group_by(journal_type) %>% 
-  summarize(linked_dataset = sum(linked_dataset_ind),
+  summarize(#linked_dataset = sum(linked_dataset_ind),
             ld_specific = sum(linked_dataset_specific),
-            cca = sum(cca_ind),
-            cca_specific = sum(cca_specific),
+            #cca = sum(cca_ind),
+            #cca_specific = sum(cca_specific),
+            cca2 = sum(cca_2_ind),
+            cca2_specific = sum(cca_2_specific),
             restrict = sum(restrict_ind),
             restrict_specific = sum(restrict_specific),
             ps_trim = sum(ps_trim_ind),
@@ -221,8 +223,8 @@ qba <- subset(combined, qba_ind == 1) %>%
   select(title,journal, year, authors)
 View(qba)
 # Complete case analysis
-cca <- subset(combined, cca_ind == 1) %>% 
-  select(title,journal, year, authors)
+cca <- subset(combined, cca_2_ind == 1) %>% 
+  select(title,journal, year, authors, cca_ind, linked_dataset_ind, cca_info)
 View(cca)
 # Empirical distribution calibration
 cal <- subset(combined, dist_calibration_ind == 1) %>% 
