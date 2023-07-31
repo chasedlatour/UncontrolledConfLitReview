@@ -20,6 +20,14 @@ library(tidyverse)
 
 ###########################################################
 ##
+## Upload the data
+##
+###########################################################
+
+combined <- readRDS("/Users/chaselatour/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatChapelHill/Documents - EPI.DETECTe/Manuscripts/Literature Review/combined_data.RDS")
+
+###########################################################
+##
 ## Conduct calculations used throughout the results.
 ##
 ###########################################################
