@@ -42,22 +42,51 @@ combined %>%
   summarize(sum = n(),
             .groups = "keep")
 
-## Count the number and proportion of articles that used PSs in the primary analysis.
-combined %>% 
-  summarize(ps = sum(ps_ind),
-            ps_percent = ps / n() * 100)
-
 ## Count the number of articles that conducted ≥1 sensitivity analysis of-interest
 ## by journal type
 combined %>% 
   group_by(journal_type) %>% 
   summarize(atleast_1 = sum(ge1_sens_anal))
 
+## Count the number and proportion of articles that used PSs in the primary analysis.
+combined %>% 
+  summarize(ps = sum(ps_ind),
+            ps_percent = ps / n() * 100)
+
+
+
 
 ## Count the number of articles with more than 1 sens analysis of interest
 combined %>% 
   group_by(journal_type) %>% 
   summarize(gt1 = sum(gt1_sens_anal))
+
+
+## Count the number that conducted an sensitivity analysis for a known
+## unmeasured confounder by journal type
+
+combined %>% 
+  mutate(specific_confounder_analysis_ind = ifelse(restrict_specific == 1 | eval_specific == 1 |
+                                                     neg_cntrl_specific == 1 | ps_trim_specific == 1 |
+                                                     cca_2_specific == 1 | cov_balance_specific == 1 |
+                                                     qba_specific == 1 | dist_calibration_specific == 1 |
+                                                     rule_out_specific == 1 | pos_cntrl_specific == 1 |
+                                                     equipoise_specific == 1 | array_specific == 1 |
+                                                     lin_psaty_kronmal_specific == 1 | iv_specific == 1 |
+                                                     pba_specific == 1 | psc_specific == 1 | 
+                                                     lin_psaty_kronmal_ps_specific == 1 | mi_specific == 1,
+                                                   1,
+                                                   0
+                                                   )
+         ) %>% 
+  group_by(journal_type) %>% 
+  summarize(
+    n_anal = sum(ge1_sens_anal),
+    n_anal_specific = sum(specific_confounder_analysis_ind, na.rm = T),
+    percent = n_anal_specific/n_anal * 100,
+    total = n(),
+    percent_total = n_anal_specific / total * 100
+  )
 
 ## Count the number that identified residual confounding as a limitation
 ## By journal type
@@ -68,21 +97,9 @@ combined %>%
             percentage = conf_limit/total * 100)
 
 
-## Count the number that conducted an sensitivity analysis for a known
-## unmeasured confounder by journal type
-
-combined %>% 
-  group_by(journal_type) %>% 
-  summarize(
-    n_anal = sum(ge1_sens_anal),
-    n_anal_specific = sum(specific_confounder_analysis_ind),
-    percent = n_anal_specific/n_anal * 100
-  )
-
-
 ###########################################################
 ##
-## Figure 2 analyses
+## Figure 1 analyses
 ##
 ###########################################################
 
@@ -121,7 +138,7 @@ combined %>%
 table2 <- combined %>% 
   group_by(journal_type) %>% 
   summarize(#linked_dataset = sum(linked_dataset_ind),
-            ld_specific = sum(linked_dataset_specific),
+            #ld_specific = sum(linked_dataset_specific),
             #cca = sum(cca_ind),
             #cca_specific = sum(cca_specific),
             cca2 = sum(cca_2_ind),
@@ -343,7 +360,7 @@ combined %>%
     restrict = sum(restrict_ind),
     ps_trim = sum(ps_trim_ind),
     equipoise = sum(equipoise_ind, na.rm = TRUE),
-    cca = sum(cca_ind)
+    cca = sum(cca_2_ind)
   )
 
 #(3) Individual-level patient data for variables a variable that was not of-interest in the primary analysis (e.g., different outcome)
@@ -389,8 +406,7 @@ combined %>%
 combined %>% 
   group_by(journal_type) %>% 
   summarize(
-    cca = sum(cca_ind),
-    linked = sum(linked_dataset_ind),
+    cca = sum(cca_2_ind),
     cov_balance = sum(cov_balance_ind),
     lpk_ps = sum(lin_psaty_kronmal_ps_ind),
     qba = sum(qba_ind, na.rm=T),
@@ -399,7 +415,7 @@ combined %>%
 
 # Gather percentage of articles that implemented at least one of these
 combined %>% 
-  mutate(ind = ifelse(cca_ind == 1 | linked_dataset_ind == 1 | cov_balance_ind == 1 | 
+  mutate(ind = ifelse(cca_2_ind == 1 | cov_balance_ind == 1 | 
                         lin_psaty_kronmal_ps_ind == 1 | qba_ind == 1 | pba_ind == 1,
                       1,
                       0)) %>% 
@@ -463,8 +479,7 @@ combined %>%
     restrict = sum(restrict_ind),
     ps_trim = sum(ps_trim_ind),
     equipoise = sum(equipoise_ind, na.rm=T),
-    cca = sum(cca_ind),
-    linked = sum(linked_dataset_ind)
+    cca = sum(cca_2_ind)
   )
 
 # Gather percentage of articles that implemented at least one of these
@@ -524,8 +539,6 @@ combined2 <- combined %>%
 combined2 %>% 
   group_by(journal_type, journal) %>% 
   summarize(sum = sum(ge1_analysis_not_e))
-
-
 
 
 

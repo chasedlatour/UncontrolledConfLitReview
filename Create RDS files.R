@@ -47,9 +47,9 @@ medical <- as_tibble(read_excel("/Users/chaselatour/Library/CloudStorage/OneDriv
                                  0)
          ) %>% 
   # Select the variables that we want
-  select(c(title, include, reviewer, second_reviewer, authors, journal_type, journal, year, sens_analyses_list, 
-           ends_with("_ind"), ends_with("_info"), ends_with("_specific"), conf_limitation_quote,
-           sum_sensitivity_anal, gt1_sens_anal, ge1_sens_anal, sum_sensitivity_anal)) %>% 
+  select(c(title, include, reviewer, second_reviewer, authors, journal_type, journal, year,
+           sens_analyses_list, 
+           ends_with("_ind"), ends_with("_info"), ends_with("_specific"), conf_limitation_quote)) %>% 
   # Exclude those that we don't want from those selected
   select(-c(matching_ind, matching_info, tmle_ind, tmle_info, g_form_ind, g_form_info,
             ccw_ind, ccw_info, outcome_adj_ind, strat_anal_ind, explicit_conf_sens_anal_ind,
@@ -63,7 +63,24 @@ medical <- as_tibble(read_excel("/Users/chaselatour/Library/CloudStorage/OneDriv
             trend_in_trend_ind, trend_in_trend_info, perturbation_ind, perturbation_info,
             adj_additional_var_ind, adj_additional_var_info)) %>% 
   # Removed these variables because not the same type across the datasets but not needed
-  subset(include == 1)
+  subset(include == 1) %>% 
+  rowwise() %>% 
+  # Make some summary variables
+  mutate(sum_sensitivity_anal = sum(cca_2_ind, restrict_ind, ps_trim_ind,
+                                    equipoise_ind, pos_cntrl_ind, neg_cntrl_outcome_ind,
+                                    neg_cntrl_exposure_ind, iv_ind, mi_ind, psc_ind,
+                                    dist_calibration_ind, eval_ind, rule_out_ind,
+                                    array_ind, lin_psaty_kronmal_ind, lin_psaty_kronmal_ps_ind,
+                                    qba_ind, pba_ind, cov_balance_ind,
+                                    na.rm=TRUE),
+         gt1_sens_anal = ifelse(sum_sensitivity_anal > 1,
+                            1,
+                            0),
+         ge1_sens_anal = ifelse(sum_sensitivity_anal > 0,
+                            1,
+                            0)
+         ) %>% 
+  ungroup()
 
 
 
@@ -88,9 +105,9 @@ epi <- as_tibble(read_excel("/Users/chaselatour/Library/CloudStorage/OneDrive-Un
                                  1,
                                  0)) %>% 
   # Select the variables that we want
-  select(c(title, include, reviewer, second_reviewer, authors, journal_type, journal, year, sens_analyses_list, 
-           ends_with("_ind"), ends_with("_info"), ends_with("_specific"), conf_limitation_quote,
-           sum_sensitivity_anal, gt1_sens_anal, ge1_sens_anal, sum_sensitivity_anal)) %>% 
+  select(c(title, include, reviewer, second_reviewer, authors, journal_type, journal, year,
+           sens_analyses_list, 
+           ends_with("_ind"), ends_with("_info"), ends_with("_specific"), conf_limitation_quote)) %>% 
   # Exclude those that we don't want from those selected
   select(-c(matching_ind, matching_info, tmle_ind, tmle_info, g_form_ind, g_form_info,
             ccw_ind, ccw_info, outcome_adj_ind, strat_anal_ind, explicit_conf_sens_anal_ind,
@@ -102,7 +119,24 @@ epi <- as_tibble(read_excel("/Users/chaselatour/Library/CloudStorage/OneDrive-Un
             rosenbaum_specific, twin_reg_ind, twin_reg_info, twin_reg_specific,
             reg_diss_ind, reg_diss_info, did_ind, did_info, missing_cause_ind, missing_cause_info,
             trend_in_trend_ind, trend_in_trend_info, perturbation_ind, perturbation_info)) %>% 
-  subset(include == 1)
+  subset(include == 1) %>% 
+  rowwise() %>%
+  # Make some summary variables
+  mutate(sum_sensitivity_anal = sum(cca_2_ind, restrict_ind, ps_trim_ind,
+                                    equipoise_ind, pos_cntrl_ind, neg_cntrl_outcome_ind,
+                                    neg_cntrl_exposure_ind, iv_ind, mi_ind, psc_ind,
+                                    dist_calibration_ind, eval_ind, rule_out_ind,
+                                    array_ind, lin_psaty_kronmal_ind, lin_psaty_kronmal_ps_ind,
+                                    qba_ind, pba_ind, cov_balance_ind,
+                                    na.rm=TRUE),
+         gt1_sens_anal = ifelse(sum_sensitivity_anal > 1,
+                                1,
+                                0),
+         ge1_sens_anal = ifelse(sum_sensitivity_anal > 0,
+                                1,
+                                0)
+  ) %>% 
+  ungroup()
 
 
 ###########################################################
