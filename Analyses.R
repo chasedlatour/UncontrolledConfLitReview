@@ -328,7 +328,7 @@ View(epi_gt1_2)
 
 ###########################################################
 ##
-## Supplemental Table 3
+## Supplemental Table 5
 ## Output the summary counts of methods by type of
 ## information required to conduct the analysis.
 ##
@@ -346,7 +346,8 @@ combined %>%
 
 # Gather percentage of articles that implemented at least one of these
 combined %>% 
-  mutate(ge1 = ifelse(rule_out_ind == 1 | array_ind == 1 | lin_psaty_kronmal_ind == 1 | qba_ind == 1 | pba_ind == 1,
+  mutate(ge1 = ifelse(rule_out_ind == 1 | array_ind == 1 | lin_psaty_kronmal_ind == 1 | qba_ind == 1 |
+                        pba_ind == 1,
                       1,
                       0)) %>% 
   group_by(journal_type) %>% 
@@ -363,6 +364,16 @@ combined %>%
     cca = sum(cca_2_ind)
   )
 
+# Gather percentage of articles that implemented at least one of these
+combined %>% 
+  mutate(ge1 = ifelse(restrict_ind == 1 | ps_trim_ind == 1 | equipoise_ind == 1 |
+                        cca_2_ind == 1,
+                      1,
+                      0)) %>% 
+  group_by(journal_type) %>% 
+  summarize(sum = sum(ge1, na.rm = T),
+            percent = sum / n() * 100)
+
 #(3) Individual-level patient data for variables a variable that was not of-interest in the primary analysis (e.g., different outcome)
 combined %>% 
   group_by(journal_type) %>% 
@@ -377,7 +388,9 @@ combined %>%
 
 # Gather percentage of articles that implemented at least one of these
 combined %>% 
-  mutate(ge1_ind = ifelse(neg_cntrl_ind == 1 | pos_cntrl_ind == 1 | dist_calibration_ind == 1 | cov_balance_ind == 1,
+  mutate(ge1_ind = ifelse(neg_cntrl_outcome_ind == 1 | neg_cntrl_exposure_ind == 1 | 
+                            pos_cntrl_ind == 1 | dist_calibration_ind == 1 | 
+                            cov_balance_ind == 1 | iv_ind == 1,
                           1,
                           0)) %>% 
   group_by(journal_type) %>% 
@@ -389,12 +402,15 @@ combined %>%
   group_by(journal_type) %>% 
   summarize(
     cov_balance = sum(cov_balance_ind),
+    qba = sum(qba_ind, na.rm = T),
+    pba = sum(pba_ind),
     psc = sum(psc_ind)
   )
 
 # Gather percentage of articles that implemented at least one of these
 combined %>% 
-  mutate(ind = ifelse(cov_balance_ind == 1 | psc_ind == 1,
+  mutate(ind = ifelse(cov_balance_ind == 1 | psc_ind == 1 | 
+                        qba_ind == 1 | pba_ind == 1,
                       1,
                       0)) %>% 
   group_by(journal_type) %>% 
@@ -407,16 +423,16 @@ combined %>%
   group_by(journal_type) %>% 
   summarize(
     cca = sum(cca_2_ind),
-    cov_balance = sum(cov_balance_ind),
     lpk_ps = sum(lin_psaty_kronmal_ps_ind),
     qba = sum(qba_ind, na.rm=T),
-    pba = sum(pba_ind)
+    pba = sum(pba_ind),
+    mi = sum(mi_ind)
   )
 
 # Gather percentage of articles that implemented at least one of these
 combined %>% 
-  mutate(ind = ifelse(cca_2_ind == 1 | cov_balance_ind == 1 | 
-                        lin_psaty_kronmal_ps_ind == 1 | qba_ind == 1 | pba_ind == 1,
+  mutate(ind = ifelse(cca_2_ind == 1 | lin_psaty_kronmal_ps_ind == 1 | qba_ind == 1 | 
+                        pba_ind == 1 | mi_ind == 1,
                       1,
                       0)) %>% 
   group_by(journal_type) %>% 
@@ -426,7 +442,7 @@ combined %>%
 
 ###########################################################
 ##
-## Supplemental Table 4
+## Supplemental Table 6
 ## Output the summary counts of methods by type of
 ## metric output to assess uncontrolled confounding by an
 ## unmeasured variable.
@@ -501,13 +517,14 @@ combined %>%
     qba = sum(qba_ind, na.rm=T),
     pba = sum(pba_ind),
     iv = sum(iv_ind),
-    psc = sum(psc_ind)
+    psc = sum(psc_ind),
+    mi = sum(mi_ind)
   )
 
 # Gather percentage of articles that implemented at least one of these
 combined %>% 
   mutate(ind = ifelse(lin_psaty_kronmal_ps_ind == 1 | qba_ind == 1 | pba_ind == 1 |
-                        iv_ind == 1 | psc_ind == 1,
+                        iv_ind == 1 | psc_ind == 1 | mi_ind == 1,
                       1,
                       0)) %>% 
   group_by(journal_type) %>% 
