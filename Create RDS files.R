@@ -22,6 +22,9 @@ library(tidyverse)
 # Needed for reading the Excel files.
 library(readxl)
 
+# Needed for writing the Excel files
+library(writexl)
+
 ###########################################################
 ##
 ## Upload the datasets and clean them.
@@ -155,7 +158,93 @@ combined <- bind_rows(list(medical, epi))
 ###########################################################
 
 saveRDS(combined,
-     file = "/Users/chaselatour/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatChapelHill/Documents - EPI.DETECTe/Manuscripts/Literature Review/combined_data.RDS")
+        file = "/Users/chaselatour/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatChapelHill/Documents - EPI.DETECTe/Manuscripts/Literature Review/combined_data.RDS")
 
 #View(combined)
+
+
+###########################################################
+##
+## Create columns that we're going to use for revise
+## and resubmit analyses.
+##
+###########################################################
+
+combined2 <- combined %>%
+  mutate(linked_dataset_assump_ind = "",
+         linked_dataset_assump = "",
+         cca_assump_ind = "",
+         cca_assump = "",
+         restrict_assump_ind = "",
+         restrict_assump = "",
+         ps_trim_assump_ind = "",
+         ps_trim_assump = "",
+         equipoise_assump_ind = "",
+         equipoise_assump = "",
+         pos_cntrl_assump_ind = "",
+         pos_cntrl_assump = "",
+         neg_cntrl_assump_ind = "",
+         neg_cntrl_assump = "",
+         iv_assump_ind = "",
+         iv_assump = "",
+         mi_assump_ind = "",
+         mi_assump = "",
+         psc_assump_ind = "",
+         psc_assump = "",
+         dist_calibration_assump_ind = "",
+         dist_calibration_assump = "",
+         eval_assump_ind = "",
+         eval_assump = "",
+         rule_out_assump_ind = "",
+         rule_out_assump = "",
+         array_assump_ind = "",
+         array_assump = "",
+         lin_psaty_kronmal_assump_ind = "",
+         lin_psaty_kronmal_assump = "",
+         qba_assump_ind = "",
+         qba_assump = "",
+         pba_assump_ind = "",
+         pba_assump = "",
+         cov_balance_assump_ind = "",
+         cov_balance_assump = "",
+         num_primary_confounders = "",
+         when_measured_confounders = "",
+         baseline_trt_confounders = "",
+         baseline_outcome_confounders = "") 
+
+# Output an Excel file with these columns.
+write_xlsx(combined2,
+           "/Users/chaselatour/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatChapelHill/Documents - EPI.DETECTe/Manuscripts/Literature Review/combined_data_RandR.xlsx")
+
+
+
+###########################################################
+##
+## Upload the new combined Excel sheet and make it into
+## an RDS file. These edits were made manually.
+##
+###########################################################
+
+## Upload the revised Excel file for R&R.
+combined_randr <- read_xlsx("/Users/chaselatour/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatChapelHill/Documents - EPI.DETECTe/Manuscripts/Literature Review/combined_data_RandR.xlsx") %>% 
+  #Filter out those that were marked as 'do not include' after first submission
+  subset(include == 1)
+
+# Save it as an RDS file
+saveRDS(combined_randr,
+        file = "/Users/chaselatour/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatChapelHill/Documents - EPI.DETECTe/Manuscripts/Literature Review/combined_data_RandR.RDS")
+
+#View(combined)
+
+
+
+
+
+
+
+
+
+
+
+
 
